@@ -1,0 +1,21 @@
+on:
+  push:
+    tags:
+    - 'v*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set output
+        id: vars
+        run: echo name=tag::${GITHUB_REF:10}
+      - name: Check output
+        uses: actions/create-release@v1
+        env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          release_name: ${{ steps.vars.outputs.tag }}
+          draft: false
+          prerelease: false
